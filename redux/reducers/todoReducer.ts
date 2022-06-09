@@ -30,7 +30,9 @@ const todoReducer = (state: TodoState = { todos: [], pending: false, error: null
         todos: state.todos.filter((i) => i.id !== action.payload.id),
       };
     default:
-      return state;  
+      return {
+        ...state
+      };
   }
 }
 

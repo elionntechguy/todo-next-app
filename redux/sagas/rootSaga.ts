@@ -10,6 +10,8 @@ import { User } from '../types/user/types';
 
 import { v4 as uuidv4 } from 'uuid'
 
+const ISSERVER = typeof window === "undefined";
+
 // Fetch Users from API
 const fetchUsersFromAPI = async () => {
   const users = await axios('https://swapi.dev/api/people');
@@ -18,16 +20,20 @@ const fetchUsersFromAPI = async () => {
       id: uuidv4(),
       name: user.name,
     }
-    localStorage['USERS'] = JSON.stringify([saveUser]);
+    if (!ISSERVER) localStorage.setItem('USERS', JSON.stringify([saveUser]));
   })
-  const usersFromStorage = localStorage['USERS'] || "[]";
-  return JSON.parse(usersFromStorage)
+  if (!ISSERVER) {
+    const usersFromStorage = localStorage.getItem('USERS') || "[]";
+    return JSON.parse(usersFromStorage)
+  }
 }
 
 // Fetch Todos from API/LocalStorage
 const fetchTodosFromAPI = () => {
-  const todos = localStorage['TODOS'] || "[]";
-  return JSON.parse(todos);
+  if (!ISSERVER) {
+    const todos = localStorage.getItem('TODOS') || "[]";
+    return JSON.parse(todos);
+  }
 }
 
 function* fetchTodos(): any {
@@ -52,7 +58,9 @@ const fetchAddTodoFromAPI = async (title: string, description: string) => {
     description: description,
     status: 'To Do'
   }
-  localStorage['TODOS'] = JSON.stringify([...fetchTodosFromAPI(), todo])
+  if (!ISSERVER) {
+    localStorage.setItem('TODOS', JSON.stringify([...fetchTodosFromAPI(), todo]))
+  }
 }
 
 function* fetchAddTodo(action: AnyAction): any {
@@ -72,7 +80,9 @@ function* watchFetchAddTodo() {
 
 // Delete Todo From API/LocalStorage
 const fetchDeleteTodoFromAPI = (id: string) => {
-  localStorage['TODOS'] = JSON.stringify([...fetchTodosFromAPI().filter((todo: Todo) => todo.id !== id)])
+  if (!ISSERVER) {
+    localStorage.setItem('TODOS', JSON.stringify([...fetchTodosFromAPI().filter((todo: Todo) => todo.id !== id)]))
+  }
   return true;
 }
 
@@ -90,14 +100,16 @@ function* watchFetchDeleteTodo() {
 // Update Todo from API/LocalStorage
 const fetchUpdateTodoFromAPI = (id: string, title: string, description: string, status: string) => {
   let updatedTodo = null;
-  localStorage['TODOS'] = JSON.stringify([...fetchTodosFromAPI().map((todo: Todo) => {
-    if (todo.id === id) {
-      updatedTodo = { ...todo, title: title, description: description, status: status };
-      return updatedTodo;
-    } else {
-      return todo;
-    }
-  })])
+  if (!ISSERVER) {
+    localStorage.setItem('TODOS', JSON.stringify([...fetchTodosFromAPI().map((todo: Todo) => {
+      if (todo.id === id) {
+        updatedTodo = { ...todo, title: title, description: description, status: status };
+        return updatedTodo;
+      } else {
+        return todo;
+      }
+    })]))
+  }
   return updatedTodo;
 }
 

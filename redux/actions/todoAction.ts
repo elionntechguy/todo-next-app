@@ -7,22 +7,22 @@ export const getTodo = () => ({
 
 export const getTodoSuccess = (todo: Todo) => ({
   type: GET_TODO_SUCCESS,
-  todo,
+  payload: todo,
 });
 
-export const getTodoFailure = (payload: string) => ({
+export const getTodoFailure = (error: string) => ({
   type: GET_TODO_FAILURE,
-  payload,
+  payload: error,
 });
 
 export const addTodo = (todo: Todo) => ({
   type: ADD_TODO,
-  todo,
+  payload: todo,
 });
 
 export const editTodo = (todo: Todo) => ({
   type: EDIT_TODO,
-  todo,
+  payload: todo,
 });
 
 export const deleteTodo = (todo: Todo) => ({
