@@ -2,6 +2,10 @@ import React, { FC, Fragment } from 'react';
 
 import { Dialog, Transition } from '@headlessui/react';
 
+import TodoOptions from './TodoOptions';
+import TodoAuthors from './TodoAuthors';
+import TodoStatus from './TodoStatus';
+
 type Props = {
   showModal: boolean;
   setShowModal: (val: boolean) => void;
@@ -27,7 +31,7 @@ const TodoModal: FC<Props> = ({ showModal, setShowModal }) => {
           <div className="fixed inset-0 bg-black bg-opacity-25" />
         </Transition.Child>
 
-        <div className="fixed inset-0 overflow-y-auto">
+        <div className="fixed z-0 inset-0 overflow-y-auto">
           <div className="flex min-h-full items-center justify-center p-4 text-center">
             <Transition.Child
               as={Fragment}
@@ -38,20 +42,49 @@ const TodoModal: FC<Props> = ({ showModal, setShowModal }) => {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+              <Dialog.Panel className="w-full max-w-xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                 <div className="mt-2">
-                  <div className="bg-slate-100 w-full p-5 rounded-md">
-                    <div className="flex flex-row">
-                      <div className="flex flex-col">
-                        <div>
-                          <p className="text-lg text-slate-800">
-                            Wash Laundry...
-                          </p>
+                  <div className="flex flex-col bg-slate-100 w-full p-5 rounded-md">
+                    <div className="space-y-6">
+                      <div className="flex flex-col-reverse md:flex-row items-center md:items-start justify-between">
+                        <div className="flex flex-col mt-5 md:mt-0 w-full md:min-w-0 basis-1/2">
+                          <div className="flex-1 overflow-hidden break-words">
+                            <span className="text-xs text-slate-600">
+                              Title
+                            </span>
+                            <p className="text-lg text-slate-800">
+                              Wash Laundry...
+                            </p>
+                          </div>
+                          <div className="flex-1 overflow-hidden break-words">
+                            <span className="text-xs text-slate-600">
+                              Description
+                            </span>
+                            <p className="text-sm text-slate-700">
+                              Today i have to wash
+                              laundry..fdsfsdsfsfdsfsdfsfdsfsdfdsfdsfdsffdsfdsfsdfdsfsdfsffdsfds
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-sm text-slate-700">
-                            Today i have to wash laundry...
-                          </p>
+                        <div className="flex flex-row md:flex-col items-center md:space-y-2 space-x-2 md:space-x-0">
+                          <div>
+                            <span className="text-xs text-slate-600">
+                              Status
+                            </span>
+                            <TodoStatus />
+                          </div>
+                          <div>
+                            <span className="text-xs text-slate-600">
+                              Assigned User
+                            </span>
+                            <TodoAuthors />
+                          </div>
+                          <div>
+                            <span className="text-xs text-slate-600">
+                              Options
+                            </span>
+                            <TodoOptions />
+                          </div>
                         </div>
                       </div>
                     </div>
