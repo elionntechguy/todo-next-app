@@ -1,4 +1,5 @@
 import type { NextPage } from 'next';
+import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import Todo from '../components/Todo';
 
@@ -19,4 +20,6 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default dynamic(() => Promise.resolve(Home), {
+  ssr: false,
+});

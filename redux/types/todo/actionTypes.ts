@@ -1,6 +1,9 @@
 export const GET_TODO = "GET_TODO";
+export const GET_USERS = "GET_USERS"
 export const GET_TODO_SUCCESS = "GET_TODO_SUCCESS";
 export const GET_TODO_FAILURE = "GET_TODO_FAILURE";
 export const ADD_TODO = "ADD_TODO";
+export const ADD_TODO_SUCCESS = "ADD_TODO_SUCCESS";
 export const EDIT_TODO = "EDIT_TODO";
+export const EDIT_TODO_SUCCESS = "EDIT_TODO_SUCCESS";
 export const DELETE_TODO = "DELETE_TODO";

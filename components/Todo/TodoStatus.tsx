@@ -4,8 +4,12 @@ import { Listbox, Transition } from '@headlessui/react';
 
 const people = [{ name: 'To Do' }, { name: 'In Progress' }, { name: 'Done' }];
 
-const TodoStatus: FC = () => {
-  const [selected, setSelected] = useState(people[0]);
+type Props = {
+  todo: any;
+};
+
+const TodoStatus: FC<Props> = ({ todo }) => {
+  const [selected, setSelected] = useState(todo.status);
 
   return (
     <div className="w-20 md:w-40">
@@ -13,16 +17,16 @@ const TodoStatus: FC = () => {
         <div className="relative">
           <Listbox.Button
             className={`relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-8 text-xs md:text-sm text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 ${
-              selected.name === 'To Do'
+              selected === 'To Do'
                 ? 'bg-red-400'
-                : selected.name === 'In Progress'
+                : selected === 'In Progress'
                 ? 'bg-orange-400'
-                : selected.name === 'Done'
+                : selected === 'Done'
                 ? 'bg-green-400'
                 : null
             }`}
           >
-            <span className="block truncate">{selected.name}</span>
+            <span className="block truncate">{selected}</span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
               {/* <SelectorIcon
                 className="h-5 w-5 text-gray-400"

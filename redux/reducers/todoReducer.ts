@@ -1,23 +1,25 @@
 import { HYDRATE } from "next-redux-wrapper";
 import { AnyAction } from "redux";
 
-import { GET_TODO, GET_TODO_SUCCESS, GET_TODO_FAILURE, ADD_TODO, EDIT_TODO, DELETE_TODO } from "../types/todo/actionTypes"
+import { GET_TODO, GET_USERS, GET_TODO_SUCCESS, GET_TODO_FAILURE, ADD_TODO, ADD_TODO_SUCCESS, EDIT_TODO_SUCCESS, DELETE_TODO } from "../types/todo/actionTypes"
 
 import { TodoState } from "../types/todo/types";
 
-const todoReducer = (state: TodoState = { todos: [], pending: false, error: null}, action: AnyAction) => {
+const todoReducer = (state: TodoState = { todos: [], users: [], pending: false, error: null }, action: AnyAction): TodoState => {
   switch (action.type) {
     case HYDRATE:
       return { ...state, ...action.payload };
+    case GET_USERS:
+      return { ...state, users: [...action.payload] };
     case GET_TODO:
       return { ...state, pending: true };
     case GET_TODO_SUCCESS:
-      return { todos: action.payload, pending: false, error: null };
+      return { todos: action.payload, users: action.payload, pending: false, error: null };
     case GET_TODO_FAILURE:
       return { ...state, pending: false, error: action.payload.error };
-    case ADD_TODO:
-      return { ...state, todos: action.payload.todos };
-    case EDIT_TODO:
+    case ADD_TODO_SUCCESS:
+      return { ...state, todos: [...state.todos, action.payload] };
+    case EDIT_TODO_SUCCESS:
       return {
         ...state,
         todos: state.todos.map((todo) =>

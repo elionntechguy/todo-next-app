@@ -9,9 +9,11 @@ import TodoStatus from './TodoStatus';
 type Props = {
   showModal: boolean;
   setShowModal: (val: boolean) => void;
+  todo: any;
+  users: any;
 };
 
-const TodoModal: FC<Props> = ({ showModal, setShowModal }) => {
+const TodoModal: FC<Props> = ({ showModal, setShowModal, todo, users }) => {
   return (
     <Transition appear show={showModal} as={Fragment}>
       <Dialog
@@ -53,7 +55,7 @@ const TodoModal: FC<Props> = ({ showModal, setShowModal }) => {
                               Title
                             </span>
                             <p className="text-lg text-slate-800">
-                              Wash Laundry...
+                              {todo.title}
                             </p>
                           </div>
                           <div className="flex-1 overflow-hidden break-words">
@@ -61,8 +63,7 @@ const TodoModal: FC<Props> = ({ showModal, setShowModal }) => {
                               Description
                             </span>
                             <p className="text-sm text-slate-700">
-                              Today i have to wash
-                              laundry..fdsfsdsfsfdsfsdfsfdsfsdfdsfdsfdsffdsfdsfsdfdsfsdfsffdsfds
+                              {todo.description}
                             </p>
                           </div>
                         </div>
@@ -71,7 +72,7 @@ const TodoModal: FC<Props> = ({ showModal, setShowModal }) => {
                             <span className="text-xs text-slate-600">
                               Status
                             </span>
-                            <TodoStatus />
+                            <TodoStatus todo={todo} />
                           </div>
                           <div>
                             <span className="text-xs text-slate-600">
