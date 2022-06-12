@@ -2,62 +2,68 @@ import { AnyAction } from 'redux';
 
 import axios from 'axios';
 import { all, call, takeLatest, takeEvery, put } from 'redux-saga/effects';
-import { getTodoSuccess, getTodoFailure, getUsers, addTodoSuccess, editTodoSuccess, deleteTodo } from "../actions/todoAction";
-import { ADD_TODO, EDIT_TODO, DELETE_TODO } from "../types/todo/actionTypes"
-import { Todo, User } from "../types/todo/types";
+import {
+  getTodoSuccess,
+  getTodoFailure,
+  getUsers,
+  addTodoSuccess,
+  editTodoSuccess,
+} from '../actions/todoAction';
+import { ADD_TODO, EDIT_TODO, DELETE_TODO } from '../types/todo/actionTypes';
+import { Todo, User } from '../types/todo/types';
 
-import { v4 as uuidv4 } from 'uuid'
+import { v4 as uuidv4 } from 'uuid';
 
-const ISSERVER = typeof window === "undefined";
+const ISSERVER = typeof window === 'undefined';
 
 // Fetch Users from API
 const fetchUsersFromAPI = async () => {
   const getAllUsers = async () => {
     const users = await axios('https://swapi.dev/api/people');
-    let outsideId = 1
+    let outsideId = 1;
     return users.data.results.map((user: { name: string }) => {
       const saveUser: User = {
         id: outsideId++,
         name: user.name,
-      }
+      };
       return saveUser;
-    })
-  }
+    });
+  };
   if (!ISSERVER) {
-    const usersFromStorage = localStorage.getItem('USERS') || "[]";
-    if (usersFromStorage === "[]") {
+    const usersFromStorage = localStorage.getItem('USERS') || '[]';
+    if (usersFromStorage === '[]') {
       localStorage.setItem('USERS', JSON.stringify(await getAllUsers()));
     }
-    return JSON.parse(usersFromStorage)
+    return JSON.parse(usersFromStorage);
   }
-}
+};
 
 function* fetchUsers(): any {
   const users = yield call(fetchUsersFromAPI);
   if (users) {
-    yield put(getUsers(users))
+    yield put(getUsers(users));
   }
 }
 
 // Fetch Todos from API/LocalStorage
 const getActiveTodos = (todos: any) => {
-  const eightHours = new Date().getTime() - (8 * 60 * 60 * 1000);
+  const eightHours = new Date().getTime() - 8 * 60 * 60 * 1000;
   // Return Active Todos (Todos that are within the 8 hours timerange)
-  return todos.filter((todo: any) => todo.timestamp >= eightHours)
-}
+  return todos.filter((todo: any) => todo.timestamp >= eightHours);
+};
 
 const fetchTodosFromAPI = () => {
   if (!ISSERVER) {
-    const todos = localStorage.getItem('TODOS') || "[]";
+    const todos = localStorage.getItem('TODOS') || '[]';
     return JSON.parse(todos);
   }
-}
+};
 
 function* fetchTodos(): any {
   try {
     const todos = yield call(fetchTodosFromAPI);
     if (todos) {
-      yield put(getTodoSuccess(getActiveTodos(todos)))
+      yield put(getTodoSuccess(getActiveTodos(todos)));
     }
   } catch (e) {
     yield put(getTodoFailure(e as string));
@@ -66,9 +72,9 @@ function* fetchTodos(): any {
 
 // Add Todo to API/LocalStorage
 const fetchAddTodoFromAPI = async (title: string, description: string) => {
-  const usersFromStorage = localStorage.getItem('USERS') || "[]";
+  const usersFromStorage = localStorage.getItem('USERS') || '[]';
   const users: Array<User> = JSON.parse(usersFromStorage);
-  let user = users[Math.floor(Math.random() * users.length)]
+  let user = users[Math.floor(Math.random() * users.length)];
   const todo: Todo = {
     userId: user.id,
     userName: user.name,
@@ -76,79 +82,121 @@ const fetchAddTodoFromAPI = async (title: string, description: string) => {
     id: uuidv4(),
     title: title,
     description: description,
-    status: 'To Do'
-  }
+    status: 'To Do',
+  };
   if (!ISSERVER) {
-    localStorage.setItem('TODOS', JSON.stringify([...fetchTodosFromAPI(), todo]))
+    localStorage.setItem(
+      'TODOS',
+      JSON.stringify([...fetchTodosFromAPI(), todo])
+    );
     return todo;
   }
-}
+};
 
 function* fetchAddTodo(action: AnyAction): any {
   if (action.payload.title && action.payload.description) {
     const actionTitle = action.payload.title.trim();
     const actionDescription = action.payload.description.trim();
-    const todo = yield call(fetchAddTodoFromAPI, actionTitle, actionDescription)
+    const todo = yield call(
+      fetchAddTodoFromAPI,
+      actionTitle,
+      actionDescription
+    );
     if (todo) {
-      yield put(addTodoSuccess(todo))
+      yield put(addTodoSuccess(todo));
     }
   }
 }
 
 function* watchFetchAddTodo() {
-  yield takeLatest(ADD_TODO, fetchAddTodo)
+  yield takeLatest(ADD_TODO, fetchAddTodo);
 }
 
 // Delete Todo From API/LocalStorage
 const fetchDeleteTodoFromAPI = (id: string) => {
   if (!ISSERVER) {
-    localStorage.setItem('TODOS', JSON.stringify([...fetchTodosFromAPI().filter((todo: Todo) => todo.id !== id)]))
+    localStorage.setItem(
+      'TODOS',
+      JSON.stringify([
+        ...fetchTodosFromAPI().filter((todo: Todo) => todo.id !== id),
+      ])
+    );
   }
   return true;
-}
+};
 
 function* fetchDeleteTodo(action: AnyAction): any {
-  yield call(fetchDeleteTodoFromAPI, action.payload.id)
+  yield call(fetchDeleteTodoFromAPI, action.payload.id);
 }
 
 function* watchFetchDeleteTodo() {
-  yield takeEvery(DELETE_TODO, fetchDeleteTodo)
+  yield takeEvery(DELETE_TODO, fetchDeleteTodo);
 }
 
 // Update Todo from API/LocalStorage
-const fetchUpdateTodoFromAPI = (id: string, title: string, description: string, userId: number, status: string) => {
+const fetchUpdateTodoFromAPI = (
+  id: string,
+  title: string,
+  description: string,
+  userId: number,
+  status: string
+) => {
   let updatedTodo = null;
   if (!ISSERVER) {
-    localStorage.setItem('TODOS', JSON.stringify([...fetchTodosFromAPI().map((todo: Todo) => {
-      if (todo.id === id) {
-        const usersFromStorage = localStorage.getItem('USERS') || "[]";
-        const users: Array<User> = JSON.parse(usersFromStorage);
-        const getUser = users.find((user) => user.id === userId)
-        updatedTodo = { ...todo, title: title, description: description, userId: userId, userName: getUser?.name, status: status };
-        return updatedTodo;
-      } else {
-        return todo;
-      }
-    })]))
+    localStorage.setItem(
+      'TODOS',
+      JSON.stringify([
+        ...fetchTodosFromAPI().map((todo: Todo) => {
+          if (todo.id === id) {
+            const usersFromStorage = localStorage.getItem('USERS') || '[]';
+            const users: Array<User> = JSON.parse(usersFromStorage);
+            const getUser = users.find((user) => user.id === userId);
+            updatedTodo = {
+              ...todo,
+              title: title,
+              description: description,
+              userId: userId,
+              userName: getUser?.name,
+              status: status,
+            };
+            return updatedTodo;
+          } else {
+            return todo;
+          }
+        }),
+      ])
+    );
   }
   return updatedTodo;
-}
+};
 
 function* fetchUpdateTodo(action: AnyAction): any {
-  if (action.payload.title && action.payload.description && action.payload.userId && action.payload.status) {
+  if (
+    action.payload.title &&
+    action.payload.description &&
+    action.payload.userId &&
+    action.payload.status
+  ) {
     const actionTitle = action.payload.title;
     const actionDescription = action.payload.description;
     const actionUserId = action.payload.userId;
     const actionStatus = action.payload.status;
-    const todo = yield call(fetchUpdateTodoFromAPI, action.payload.id, actionTitle, actionDescription, actionUserId, actionStatus)
+    const todo = yield call(
+      fetchUpdateTodoFromAPI,
+      action.payload.id,
+      actionTitle,
+      actionDescription,
+      actionUserId,
+      actionStatus
+    );
     if (todo) {
-      yield put(editTodoSuccess(todo))
+      yield put(editTodoSuccess(todo));
     }
   }
 }
 
 function* watchFetchUpdateTodo() {
-  yield takeLatest(EDIT_TODO, fetchUpdateTodo)
+  yield takeLatest(EDIT_TODO, fetchUpdateTodo);
 }
 
 const todosSagas = [
@@ -156,8 +204,8 @@ const todosSagas = [
   fetchTodos(),
   watchFetchAddTodo(),
   watchFetchDeleteTodo(),
-  watchFetchUpdateTodo()
-]
+  watchFetchUpdateTodo(),
+];
 
 export default function* rootSaga() {
   yield all(todosSagas);
