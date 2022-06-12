@@ -1,42 +1,40 @@
 import React, { FC } from 'react';
 
 type Props = {
-  add: (e: React.FormEvent) => void;
-  title: string;
-  setTitle: (val: string) => void;
-  description: string;
-  setDescription: (val: string) => void;
+  addTask: (e: React.FormEvent) => void;
+  todoDetails: { title: string; description: string };
+  setTodoDetails: (val: { title: string; description: string }) => void;
 };
 
-const TodoForm: FC<Props> = ({
-  add,
-  title,
-  setTitle,
-  description,
-  setDescription,
-}) => {
+const TodoForm: FC<Props> = ({ addTask, todoDetails, setTodoDetails }) => {
   return (
     <div className="w-full">
       <div className="space-y-2">
         <p className="text-slate-800 text-2xl">Todo App</p>
         <div className="my-2">
-          <form onSubmit={add}>
+          <form onSubmit={addTask}>
             <div className="flex space-x-2">
               <div className="space-y-2">
                 <input
                   type="text"
                   id="title"
-                  value={title}
+                  value={todoDetails.title}
                   onChange={(e) => {
-                    setTitle(e.target.value);
+                    setTodoDetails({
+                      title: e.target.value,
+                      description: todoDetails.description,
+                    });
                   }}
                   placeholder="Write your task title..."
                   className="px-3 py-3 placeholder-slate-400 text-slate-600 relative bg-white rounded text-sm border-0 shadow outline-none focus:outline-none focus:ring w-full"
                 />
                 <textarea
-                  value={description}
+                  value={todoDetails.description}
                   onChange={(e) => {
-                    setDescription(e.target.value);
+                    setTodoDetails({
+                      title: todoDetails.title,
+                      description: e.target.value,
+                    });
                   }}
                   rows={3}
                   placeholder="Write your task description..."

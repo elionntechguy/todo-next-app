@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 
 import {
   getPendingSelector,
@@ -8,34 +8,43 @@ import {
   getErrorSelector,
   getUsersSelector,
 } from '../../redux/selectors';
-
+import { RootState, AppDispatch } from '../../redux/store';
 import { addTodo, editTodo, deleteTodo } from '../../redux/actions/todoAction';
 
 import TodoForm from './TodoForm';
 import TodoTasks from './TodoTasks';
 
 const Todo: FC = () => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [todoDetails, setTodoDetails] = useState<{
+    title: string;
+    description: string;
+  }>({ title: '', description: '' });
 
-  const dispatch = useDispatch();
-  const pending = useSelector(getPendingSelector);
-  const todos = useSelector(getTodosSelector);
-  const error = useSelector(getErrorSelector);
-  const users = useSelector(getUsersSelector);
+  const useAppDispatch = () => useDispatch<AppDispatch>();
+  const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
-  const add = (e: React.FormEvent) => {
+  const dispatch = useAppDispatch();
+  const pending = useAppSelector(getPendingSelector);
+  const todos = useAppSelector(getTodosSelector);
+  const error = useAppSelector(getErrorSelector);
+  const users = useAppSelector(getUsersSelector);
+
+  // Add Task method
+  const addTask = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim() || !description.trim()) return;
+    if (!todoDetails.title.trim() || !todoDetails.description.trim()) return;
 
-    const addTodoAction = addTodo(title, description);
+    const addTodoAction = addTodo(todoDetails.title, todoDetails.description);
     dispatch(addTodoAction);
 
-    setTitle('');
-    setDescription('');
+    setTodoDetails({
+      title: '',
+      description: '',
+    });
   };
 
-  const edit = (
+  // Edit Task method
+  const editTask = (
     todoId: string,
     title: string,
     description: string,
@@ -46,6 +55,7 @@ const Todo: FC = () => {
     dispatch(editAction);
   };
 
+  // Delete Task method
   const deleteTask = (todoId: string) => {
     const deleteAction = deleteTodo(todoId);
     dispatch(deleteAction);
@@ -56,11 +66,9 @@ const Todo: FC = () => {
       <div className="flex flex-col w-full">
         <div>
           <TodoForm
-            add={add}
-            title={title}
-            setTitle={setTitle}
-            description={description}
-            setDescription={setDescription}
+            addTask={addTask}
+            todoDetails={todoDetails}
+            setTodoDetails={setTodoDetails}
           />
         </div>
         <div className="my-2">
@@ -69,7 +77,7 @@ const Todo: FC = () => {
             users={users}
             pending={pending}
             error={error}
-            edit={edit}
+            editTask={editTask}
             deleteTask={deleteTask}
           />
         </div>

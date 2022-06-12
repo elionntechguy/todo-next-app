@@ -1,4 +1,3 @@
-import { Store } from 'redux';
 import { configureStore } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
 import { createWrapper, Context } from 'next-redux-wrapper';
@@ -21,5 +20,10 @@ export const makeStore = (context: Context) => {
 
   return store;
 };
+
+type Store = ReturnType<typeof makeStore>;
+
+export type AppDispatch = Store['dispatch'];
+export type RootState = ReturnType<Store['getState']>;
 
 export const wrapper = createWrapper<Store>(makeStore, { debug: true });
