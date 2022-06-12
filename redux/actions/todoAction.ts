@@ -1,4 +1,4 @@
-import { GET_TODO, GET_TODO_SUCCESS, GET_TODO_FAILURE, ADD_TODO, ADD_TODO_SUCCESS, EDIT_TODO, DELETE_TODO, GET_USERS } from "../types/todo/actionTypes"
+import { GET_TODO, GET_TODO_SUCCESS, GET_TODO_FAILURE, ADD_TODO, ADD_TODO_SUCCESS, EDIT_TODO, EDIT_TODO_SUCCESS, DELETE_TODO, GET_USERS } from "../types/todo/actionTypes"
 import { Todo, User } from "../types/todo/types";
 
 export const getTodo = () => ({
@@ -33,19 +33,19 @@ export const addTodoSuccess = (todo: Todo) => ({
   payload: todo,
 });
 
-export const editTodo = (id: number, title?: string, description?: string, status?: string, user?: number) => ({
+export const editTodo = (id: string, title: string, description: string, userId: number, status: string) => ({
   type: EDIT_TODO,
   payload: {
     id,
     title,
     description,
-    status,
-    user
+    userId,
+    status
   },
 });
 
 export const editTodoSuccess = (todo: Todo) => ({
-  type: EDIT_TODO,
+  type: EDIT_TODO_SUCCESS,
   payload: todo,
 });
 

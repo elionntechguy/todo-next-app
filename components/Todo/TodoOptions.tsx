@@ -2,7 +2,12 @@ import React, { FC, Fragment } from 'react';
 
 import { Menu, Transition } from '@headlessui/react';
 
-const TodoOptions: FC = () => {
+type Props = {
+  editMode: boolean;
+  setEditMode: (val: boolean) => void;
+};
+
+const TodoOptions: FC<Props> = ({ editMode, setEditMode }) => {
   return (
     <div className="top-16 text-right">
       <Menu as="div" className="relative inline-block">
@@ -25,9 +30,15 @@ const TodoOptions: FC = () => {
               <Menu.Item>
                 {({ active }) => (
                   <button
+                    disabled={editMode ? true : false}
                     className={`${
-                      active ? 'bg-violet-500 text-white' : 'text-gray-900'
+                      active
+                        ? 'bg-violet-500 text-white'
+                        : editMode
+                        ? 'text-slate-400'
+                        : 'text-gray-900'
                     } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                    onClick={() => setEditMode(true)}
                   >
                     {/* {active ? (
                       

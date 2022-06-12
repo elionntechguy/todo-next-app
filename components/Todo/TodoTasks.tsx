@@ -1,5 +1,4 @@
 import React, { FC, useState } from 'react';
-import { Todo, User } from '../../redux/types/todo/types';
 
 import TodoModal from './TodoModal';
 
@@ -8,10 +7,17 @@ type Props = {
   users: any;
   pending: any;
   error: any;
+  edit: (
+    id: string,
+    title: string,
+    description: string,
+    userId: number,
+    status: string
+  ) => void;
 };
 
-const TodoTasks: FC<Props> = ({ todos, users, pending, error }) => {
-  const [showModal, setShowModal] = useState<boolean>(false);
+const TodoTasks: FC<Props> = ({ todos, users, pending, error, edit }) => {
+  const [showModal, setShowModal] = useState<number>(0);
 
   return (
     <div className="my-4 space-y-2">
@@ -34,7 +40,7 @@ const TodoTasks: FC<Props> = ({ todos, users, pending, error }) => {
           <div
             key={index}
             className="p-4 bg-slate-100 cursor-pointer rounded-md"
-            onClick={() => setShowModal(true)}
+            onClick={() => setShowModal(todo.id)}
           >
             <div className="flex flex-row items-center justify-between">
               <p className="text-slate-700 text-lg truncate">{todo.title}</p>
@@ -45,6 +51,7 @@ const TodoTasks: FC<Props> = ({ todos, users, pending, error }) => {
               setShowModal={setShowModal}
               todo={todo}
               users={users}
+              edit={edit}
             />
           </div>
         ))

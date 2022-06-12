@@ -9,15 +9,10 @@ import {
   getUsersSelector,
 } from '../../redux/selectors';
 
-import { addTodo } from '../../redux/actions/todoAction';
+import { addTodo, editTodo } from '../../redux/actions/todoAction';
 
 import TodoForm from './TodoForm';
 import TodoTasks from './TodoTasks';
-
-type TodoType = {
-  title: string;
-  description: string;
-};
 
 const Todo: FC = () => {
   const [title, setTitle] = useState('');
@@ -40,6 +35,17 @@ const Todo: FC = () => {
     setDescription('');
   };
 
+  const edit = (
+    todoId: string,
+    title: string,
+    description: string,
+    userId: number,
+    status: string
+  ) => {
+    const editAction = editTodo(todoId, title, description, userId, status);
+    dispatch(editAction);
+  };
+
   return (
     <div className="relative px-7 py-6 mx-6 md:mx-0 bg-white ring-1 ring-gray-900/5 rounded-lg leading-none flex items-top">
       <div className="flex flex-col w-full">
@@ -58,6 +64,7 @@ const Todo: FC = () => {
             users={users}
             pending={pending}
             error={error}
+            edit={edit}
           />
         </div>
       </div>
