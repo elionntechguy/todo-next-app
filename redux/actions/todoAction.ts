@@ -1,5 +1,15 @@
-import { GET_TODO, GET_TODO_SUCCESS, GET_TODO_FAILURE, ADD_TODO, ADD_TODO_SUCCESS, EDIT_TODO, EDIT_TODO_SUCCESS, DELETE_TODO, GET_USERS } from "../types/todo/actionTypes"
-import { Todo, User } from "../types/todo/types";
+import {
+  GET_TODO,
+  GET_TODO_SUCCESS,
+  GET_TODO_FAILURE,
+  ADD_TODO,
+  ADD_TODO_SUCCESS,
+  EDIT_TODO,
+  EDIT_TODO_SUCCESS,
+  DELETE_TODO,
+  GET_USERS,
+} from '../types/todo/actionTypes';
+import { Todo, User } from '../types/todo/types';
 
 export const getTodo = () => ({
   type: GET_TODO,
@@ -7,8 +17,8 @@ export const getTodo = () => ({
 
 export const getUsers = (user: User) => ({
   type: GET_USERS,
-  payload: user
-})
+  payload: user,
+});
 
 export const getTodoSuccess = (todo: Todo) => ({
   type: GET_TODO_SUCCESS,
@@ -24,8 +34,8 @@ export const addTodo = (title: string, description: string) => ({
   type: ADD_TODO,
   payload: {
     title,
-    description
-  }
+    description,
+  },
 });
 
 export const addTodoSuccess = (todo: Todo) => ({
@@ -33,14 +43,20 @@ export const addTodoSuccess = (todo: Todo) => ({
   payload: todo,
 });
 
-export const editTodo = (id: string, title: string, description: string, userId: number, status: string) => ({
+export const editTodo = (
+  id: string,
+  title: string,
+  description: string,
+  userId: number,
+  status: string
+) => ({
   type: EDIT_TODO,
   payload: {
     id,
     title,
     description,
     userId,
-    status
+    status,
   },
 });
 
@@ -52,6 +68,6 @@ export const editTodoSuccess = (todo: Todo) => ({
 export const deleteTodo = (id: string) => ({
   type: DELETE_TODO,
   payload: {
-    id
+    id,
   },
 });

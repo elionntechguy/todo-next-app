@@ -1,11 +1,22 @@
-import { HYDRATE } from "next-redux-wrapper";
-import { AnyAction } from "redux";
+import { HYDRATE } from 'next-redux-wrapper';
+import { AnyAction } from 'redux';
 
-import { GET_TODO, GET_USERS, GET_TODO_SUCCESS, GET_TODO_FAILURE, ADD_TODO, ADD_TODO_SUCCESS, EDIT_TODO_SUCCESS, DELETE_TODO } from "../types/todo/actionTypes"
+import {
+  GET_TODO,
+  GET_USERS,
+  GET_TODO_SUCCESS,
+  GET_TODO_FAILURE,
+  ADD_TODO_SUCCESS,
+  EDIT_TODO_SUCCESS,
+  DELETE_TODO,
+} from '../types/todo/actionTypes';
 
-import { TodoState } from "../types/todo/types";
+import { TodoState } from '../types/todo/types';
 
-const todoReducer = (state: TodoState = { todos: [], users: [], pending: false, error: null }, action: AnyAction): TodoState => {
+const todoReducer = (
+  state: TodoState = { todos: [], users: [], pending: false, error: null },
+  action: AnyAction
+): TodoState => {
   switch (action.type) {
     case HYDRATE:
       return { ...state, ...action.payload };
@@ -14,7 +25,12 @@ const todoReducer = (state: TodoState = { todos: [], users: [], pending: false, 
     case GET_TODO:
       return { ...state, pending: true };
     case GET_TODO_SUCCESS:
-      return { todos: action.payload, users: action.payload, pending: false, error: null };
+      return {
+        todos: action.payload,
+        users: action.payload,
+        pending: false,
+        error: null,
+      };
     case GET_TODO_FAILURE:
       return { ...state, pending: false, error: action.payload.error };
     case ADD_TODO_SUCCESS:
@@ -33,9 +49,9 @@ const todoReducer = (state: TodoState = { todos: [], users: [], pending: false, 
       };
     default:
       return {
-        ...state
+        ...state,
       };
   }
-}
+};
 
 export default todoReducer;

@@ -7,7 +7,7 @@ type Props = {
   users: any;
   pending: any;
   error: any;
-  edit: (
+  editTask: (
     id: string,
     title: string,
     description: string,
@@ -22,7 +22,7 @@ const TodoTasks: FC<Props> = ({
   users,
   pending,
   error,
-  edit,
+  editTask,
   deleteTask,
 }) => {
   const [showModal, setShowModal] = useState<number>(0);
@@ -44,26 +44,29 @@ const TodoTasks: FC<Props> = ({
           </div>
         </div>
       ) : (
-        todos.map((todo: any, index: number) => (
-          <div
-            key={index}
-            className="p-4 bg-slate-100 cursor-pointer rounded-md"
-            onClick={() => setShowModal(todo.id)}
-          >
-            <div className="flex flex-row items-center justify-between">
-              <p className="text-slate-700 text-lg truncate">{todo.title}</p>
-              <p className="text-slate-500 text-xs">{todo.userName}</p>
+        todos.map((todo: any) => {
+          const { id, title, userName } = todo;
+          return (
+            <div
+              key={id}
+              className="p-4 bg-slate-100 cursor-pointer rounded-md"
+              onClick={() => setShowModal(id)}
+            >
+              <div className="flex flex-row items-center justify-between">
+                <p className="text-slate-700 text-lg truncate">{title}</p>
+                <p className="text-slate-500 text-xs">{userName}</p>
+              </div>
+              <TodoModal
+                showModal={showModal}
+                setShowModal={setShowModal}
+                todo={todo}
+                users={users}
+                editTask={editTask}
+                deleteTask={deleteTask}
+              />
             </div>
-            <TodoModal
-              showModal={showModal}
-              setShowModal={setShowModal}
-              todo={todo}
-              users={users}
-              edit={edit}
-              deleteTask={deleteTask}
-            />
-          </div>
-        ))
+          );
+        })
       )}
     </div>
   );

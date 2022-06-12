@@ -2,19 +2,19 @@ import React, { FC, Fragment, useState } from 'react';
 
 import { Dialog, Transition } from '@headlessui/react';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClose, faCheck } from '@fortawesome/free-solid-svg-icons';
+
 import TodoOptions from './TodoOptions';
 import TodoAuthors from './TodoAuthors';
 import TodoStatus from './TodoStatus';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClose, faCheck } from '@fortawesome/free-solid-svg-icons';
 
 type Props = {
   showModal: number;
   setShowModal: (val: number) => void;
   todo: any;
   users: any;
-  edit: (
+  editTask: (
     id: string,
     title: string,
     description: string,
@@ -29,16 +29,26 @@ const TodoModal: FC<Props> = ({
   setShowModal,
   todo,
   users,
-  edit,
+  editTask,
   deleteTask,
 }) => {
-  const [editMode, setEditMode] = useState(false);
+  const { id, title, description, userId, status } = todo;
 
-  const [title, setTitle] = useState(todo.title);
-  const [description, setDescription] = useState(todo.description);
+  const [editMode, setEditMode] = useState<boolean>(false);
+
+  const [todoDetails, setTodoDetails] = useState<{
+    title: string;
+    description: string;
+  }>({ title: '', description: '' });
+
+  // Edit method
+  const edit = () => {
+    editTask(id, todoDetails.title, todoDetails.description, userId, status);
+    setEditMode(false);
+  };
 
   return (
-    <Transition appear show={showModal === todo.id} as={Fragment}>
+    <Transition appear show={showModal === id} as={Fragment}>
       <Dialog
         as="div"
         className="relative z-10"
@@ -82,16 +92,17 @@ const TodoModal: FC<Props> = ({
                                 <input
                                   type="text"
                                   className="px-3 py-2 placeholder-slate-400 text-slate-600 relative bg-white rounded text-sm border-0 shadow outline-none focus:outline-none w-full"
-                                  value={title}
+                                  defaultValue={title}
                                   onChange={(e) => {
-                                    setTitle(e.target.value);
+                                    setTodoDetails({
+                                      title: e.target.value,
+                                      description: todoDetails.description,
+                                    });
                                   }}
                                 />
                               </div>
                             ) : (
-                              <p className="text-lg text-slate-800">
-                                {todo.title}
-                              </p>
+                              <p className="text-lg text-slate-800">{title}</p>
                             )}
                           </div>
                           <div className="flex-1 overflow-hidden break-words">
@@ -102,15 +113,18 @@ const TodoModal: FC<Props> = ({
                               <div>
                                 <textarea
                                   className="resize-none px-3 py-3 placeholder-slate-400 text-slate-600 relative bg-white rounded text-sm border-0 shadow outline-none focus:outline-none w-full"
-                                  value={description}
+                                  defaultValue={description}
                                   onChange={(e) => {
-                                    setDescription(e.target.value);
+                                    setTodoDetails({
+                                      title: todoDetails.title,
+                                      description: e.target.value,
+                                    });
                                   }}
                                 />
                               </div>
                             ) : (
                               <p className="text-sm text-slate-800">
-                                {todo.description}
+                                {description}
                               </p>
                             )}
                           </div>
@@ -124,16 +138,7 @@ const TodoModal: FC<Props> = ({
                               </button>
                               <button
                                 className="w-2 text-slate-500 hover:text-slate-700"
-                                onClick={() => {
-                                  edit(
-                                    todo.id,
-                                    title,
-                                    description,
-                                    todo.userId,
-                                    todo.status
-                                  );
-                                  setEditMode(false);
-                                }}
+                                onClick={edit}
                               >
                                 <FontAwesomeIcon icon={faCheck} size="lg" />
                               </button>
@@ -145,7 +150,7 @@ const TodoModal: FC<Props> = ({
                             <span className="text-xs text-slate-600">
                               Status
                             </span>
-                            <TodoStatus todo={todo} edit={edit} />
+                            <TodoStatus todo={todo} editTask={editTask} />
                           </div>
                           <div>
                             <span className="text-xs text-slate-600">
@@ -154,7 +159,7 @@ const TodoModal: FC<Props> = ({
                             <TodoAuthors
                               users={users}
                               todo={todo}
-                              edit={edit}
+                              editTask={editTask}
                             />
                           </div>
                           <div>

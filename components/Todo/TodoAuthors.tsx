@@ -1,11 +1,11 @@
-import React, { FC, useState, Fragment } from 'react';
+import React, { FC, Fragment } from 'react';
 
 import { Listbox, Transition } from '@headlessui/react';
 
 type Props = {
   todo: any;
   users: any;
-  edit: (
+  editTask: (
     id: string,
     title: string,
     description: string,
@@ -14,18 +14,25 @@ type Props = {
   ) => void;
 };
 
-const TodoAuthors: FC<Props> = ({ todo, users, edit }) => {
+interface usersMap {
+  id: number;
+  name: string;
+}
+
+const TodoAuthors: FC<Props> = ({ todo, users, editTask }) => {
+  const { id, title, description, userId, userName, status } = todo;
+
   return (
     <div className="w-20 md:w-40">
       <Listbox
-        value={todo.userName}
-        onChange={(user: any) =>
-          edit(todo.id, todo.title, todo.description, user.id, todo.status)
+        value={userName}
+        onChange={({ id: newUserId }) =>
+          editTask(id, title, description, newUserId, status)
         }
       >
         <div className="relative">
           <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-8 text-xs md:text-sm text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300">
-            <span className="block truncate">{todo.userName}</span>
+            <span className="block truncate">{userName}</span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
               {/* <SelectorIcon
                 className="h-5 w-5 text-gray-400"
@@ -41,10 +48,10 @@ const TodoAuthors: FC<Props> = ({ todo, users, edit }) => {
           >
             <Listbox.Options className="absolute z-10 mt-2 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-xs md:text-sm shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
               {users
-                .filter((user: any) => user.id !== todo.userId)
-                .map((user: any, index: number) => (
+                .filter(({ id }: usersMap) => id !== userId)
+                .map(({ name, id }: usersMap) => (
                   <Listbox.Option
-                    key={index}
+                    key={id}
                     className={({ active }) =>
                       `relative cursor-default select-none py-2 pl-3 pr-4 ${
                         active
@@ -52,7 +59,7 @@ const TodoAuthors: FC<Props> = ({ todo, users, edit }) => {
                           : 'text-gray-900'
                       }`
                     }
-                    value={user}
+                    value={{ id, name }}
                   >
                     {({ selected }) => (
                       <>
@@ -61,7 +68,7 @@ const TodoAuthors: FC<Props> = ({ todo, users, edit }) => {
                             selected ? 'font-medium' : 'font-normal'
                           }`}
                         >
-                          {user.name}
+                          {name}
                         </span>
                         {/* {selected ? (
                         <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
