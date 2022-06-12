@@ -2,7 +2,7 @@ import { AnyAction } from 'redux';
 
 import axios from 'axios';
 import { all, call, takeLatest, takeEvery, put } from 'redux-saga/effects';
-import { getTodoSuccess, getTodoFailure, addTodo, deleteTodo, editTodo, getUsers, addTodoSuccess, editTodoSuccess } from "../actions/todoAction";
+import { getTodoSuccess, getTodoFailure, getUsers, addTodoSuccess, editTodoSuccess } from "../actions/todoAction";
 import { ADD_TODO, EDIT_TODO, DELETE_TODO } from "../types/todo/actionTypes"
 import { Todo, User } from "../types/todo/types";
 
@@ -101,10 +101,7 @@ const fetchDeleteTodoFromAPI = (id: string) => {
 }
 
 function* fetchDeleteTodo(action: AnyAction): any {
-  const deleted = yield call(fetchDeleteTodoFromAPI, action.id)
-  if (deleted) {
-    yield put(deleteTodo(action.id))
-  }
+  const deleted = yield call(fetchDeleteTodoFromAPI, action.payload.id)
 }
 
 function* watchFetchDeleteTodo() {

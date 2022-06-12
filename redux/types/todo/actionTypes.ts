@@ -7,3 +7,4 @@ export const ADD_TODO_SUCCESS = "ADD_TODO_SUCCESS";
 export const EDIT_TODO = "EDIT_TODO";
 export const EDIT_TODO_SUCCESS = "EDIT_TODO_SUCCESS";
 export const DELETE_TODO = "DELETE_TODO";
+export const DELETE_TODO_SUCCESS = "DELETE_TODO_SUCCESS";

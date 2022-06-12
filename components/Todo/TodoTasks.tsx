@@ -14,9 +14,17 @@ type Props = {
     userId: number,
     status: string
   ) => void;
+  deleteTask: (id: string) => void;
 };
 
-const TodoTasks: FC<Props> = ({ todos, users, pending, error, edit }) => {
+const TodoTasks: FC<Props> = ({
+  todos,
+  users,
+  pending,
+  error,
+  edit,
+  deleteTask,
+}) => {
   const [showModal, setShowModal] = useState<number>(0);
 
   return (
@@ -52,6 +60,7 @@ const TodoTasks: FC<Props> = ({ todos, users, pending, error, edit }) => {
               todo={todo}
               users={users}
               edit={edit}
+              deleteTask={deleteTask}
             />
           </div>
         ))

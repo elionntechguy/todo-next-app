@@ -21,6 +21,7 @@ type Props = {
     userId: number,
     status: string
   ) => void;
+  deleteTask: (id: string) => void;
 };
 
 const TodoModal: FC<Props> = ({
@@ -29,6 +30,7 @@ const TodoModal: FC<Props> = ({
   todo,
   users,
   edit,
+  deleteTask,
 }) => {
   const [editMode, setEditMode] = useState(false);
 
@@ -160,8 +162,11 @@ const TodoModal: FC<Props> = ({
                               Options
                             </span>
                             <TodoOptions
+                              todo={todo}
+                              setShowModal={setShowModal}
                               editMode={editMode}
                               setEditMode={setEditMode}
+                              deleteTask={deleteTask}
                             />
                           </div>
                         </div>

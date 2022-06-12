@@ -9,7 +9,7 @@ import {
   getUsersSelector,
 } from '../../redux/selectors';
 
-import { addTodo, editTodo } from '../../redux/actions/todoAction';
+import { addTodo, editTodo, deleteTodo } from '../../redux/actions/todoAction';
 
 import TodoForm from './TodoForm';
 import TodoTasks from './TodoTasks';
@@ -46,6 +46,11 @@ const Todo: FC = () => {
     dispatch(editAction);
   };
 
+  const deleteTask = (todoId: string) => {
+    const deleteAction = deleteTodo(todoId);
+    dispatch(deleteAction);
+  };
+
   return (
     <div className="relative px-7 py-6 mx-6 md:mx-0 bg-white ring-1 ring-gray-900/5 rounded-lg leading-none flex items-top">
       <div className="flex flex-col w-full">
@@ -65,6 +70,7 @@ const Todo: FC = () => {
             pending={pending}
             error={error}
             edit={edit}
+            deleteTask={deleteTask}
           />
         </div>
       </div>
