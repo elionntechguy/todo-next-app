@@ -2,7 +2,7 @@ import { AnyAction } from 'redux';
 
 import axios from 'axios';
 import { all, call, takeLatest, takeEvery, put } from 'redux-saga/effects';
-import { getTodoSuccess, getTodoFailure, getUsers, addTodoSuccess, editTodoSuccess } from "../actions/todoAction";
+import { getTodoSuccess, getTodoFailure, getUsers, addTodoSuccess, editTodoSuccess, deleteTodo } from "../actions/todoAction";
 import { ADD_TODO, EDIT_TODO, DELETE_TODO } from "../types/todo/actionTypes"
 import { Todo, User } from "../types/todo/types";
 
@@ -40,6 +40,12 @@ function* fetchUsers(): any {
 }
 
 // Fetch Todos from API/LocalStorage
+const getActiveTodos = (todos: any) => {
+  const eightHours = new Date().getTime() - (8 * 60 * 60 * 1000);
+  // Return Active Todos (Todos that are within the 8 hours timerange)
+  return todos.filter((todo: any) => todo.timestamp >= eightHours)
+}
+
 const fetchTodosFromAPI = () => {
   if (!ISSERVER) {
     const todos = localStorage.getItem('TODOS') || "[]";
@@ -51,7 +57,7 @@ function* fetchTodos(): any {
   try {
     const todos = yield call(fetchTodosFromAPI);
     if (todos) {
-      yield put(getTodoSuccess(todos))
+      yield put(getTodoSuccess(getActiveTodos(todos)))
     }
   } catch (e) {
     yield put(getTodoFailure(e as string));
@@ -66,6 +72,7 @@ const fetchAddTodoFromAPI = async (title: string, description: string) => {
   const todo: Todo = {
     userId: user.id,
     userName: user.name,
+    timestamp: new Date().getTime(),
     id: uuidv4(),
     title: title,
     description: description,
@@ -101,7 +108,7 @@ const fetchDeleteTodoFromAPI = (id: string) => {
 }
 
 function* fetchDeleteTodo(action: AnyAction): any {
-  const deleted = yield call(fetchDeleteTodoFromAPI, action.payload.id)
+  yield call(fetchDeleteTodoFromAPI, action.payload.id)
 }
 
 function* watchFetchDeleteTodo() {

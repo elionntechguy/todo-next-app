@@ -1,4 +1,4 @@
-import { GET_TODO, GET_TODO_SUCCESS, GET_TODO_FAILURE, ADD_TODO, ADD_TODO_SUCCESS, EDIT_TODO, EDIT_TODO_SUCCESS, DELETE_TODO, DELETE_TODO_SUCCESS, GET_USERS } from "../types/todo/actionTypes"
+import { GET_TODO, GET_TODO_SUCCESS, GET_TODO_FAILURE, ADD_TODO, ADD_TODO_SUCCESS, EDIT_TODO, EDIT_TODO_SUCCESS, DELETE_TODO, GET_USERS } from "../types/todo/actionTypes"
 import { Todo, User } from "../types/todo/types";
 
 export const getTodo = () => ({
